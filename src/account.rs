@@ -1,6 +1,8 @@
 use chrono::NaiveDate;
+use uuid::Uuid;
 
 pub struct Account {
+    pub id: AccountId,
     pub name: String,
     pub currency: String,
     pub account_number: u32,
@@ -10,6 +12,7 @@ pub struct Account {
 impl Account {
     pub fn new(name: String, currency: String, account_number: u32) -> Self {
         Account {
+            id: AccountId::new(),
             name,
             currency,
             account_number,
@@ -34,4 +37,13 @@ pub struct Entry {
     pub posting_date: NaiveDate,
     pub effective_date: NaiveDate,
     pub amount: f64,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct AccountId(Uuid);
+
+impl AccountId {
+    pub fn new() -> Self {
+        AccountId(Uuid::new_v4())
+    }
 }
