@@ -15,7 +15,7 @@ pub enum ChartOfAccounts {
     Group {
         headline: Option<String>,
         footer: Option<String>,
-        children: HashMap<String, ChartOfAccounts>,
+        children: Vec<ChartOfAccounts>,
     },
     Account {
         info: AccountInfo,
