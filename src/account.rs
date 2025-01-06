@@ -26,19 +26,20 @@ impl Account {
     }
 
     pub fn get_balance(&self, date: NaiveDate) -> MoneyAmount {
-        self.entries
-            .iter()
-            .filter(|entry| entry.posting_date <= date)
-            .map(|entry| entry.amount)
-            .sum()
+        let mut balance = MoneyAmount::new(Decimal::ZERO);
+        for entry in &self.entries {
+            if entry.posting_date <= date {
+                balance = balance + entry.amount;
+            }
+        }
+        balance
     }
 }
 
 pub struct Entry {
     pub posting_date: NaiveDate,
     pub effective_date: NaiveDate,
-    pub debit: MoneyAmount,
-    pub credit: MoneyAmount,
+    pub amount: MoneyAmount,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
