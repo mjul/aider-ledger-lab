@@ -1,7 +1,8 @@
 use chrono::NaiveDate;
 use uuid::Uuid;
 use rust_decimal::Decimal;
-use rusty_money::{Money, Currency};
+use rusty_money::{Money};
+use rusty_money::iso::Currency;
 
 pub struct Account {
     pub id: AccountId,
