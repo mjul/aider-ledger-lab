@@ -57,7 +57,7 @@ impl ChartOfAccounts {
             }
             ChartOfAccounts::Account { name: account_name, .. } => {
                 if name == account_name && path.len() == 1 {
-                    Some(&Account::new(account_name.to_string()))
+                    Some(&Account::new(account_name.to_string(), Currency {}, 0))
                 } else {
                     None
                 }
