@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::account::Account;
+use crate::account::{Account, AccountInfo};
 
 #[derive(Debug)]
 pub enum AccountType {
@@ -18,7 +18,7 @@ pub enum ChartOfAccounts {
         children: HashMap<String, ChartOfAccounts>,
     },
     Account {
-        name: String,
+        info: AccountInfo,
         account_type: AccountType,
     },
 }
@@ -36,7 +36,7 @@ impl ChartOfAccounts {
     pub fn name(&self) -> &str {
         match self {
             ChartOfAccounts::Group { headline, .. } => headline.as_ref().map_or("", |s| s),
-            ChartOfAccounts::Account { name, .. } => name,
+            ChartOfAccounts::Account { info, .. } => &info.name,
         }
     }
 
@@ -54,9 +54,9 @@ impl ChartOfAccounts {
                     children.get(name).and_then(|child| child.get_account(&path[1..]))
                 }
             }
-            ChartOfAccounts::Account { name: account_name, .. } => {
-                if name == account_name && path.len() == 1 {
-                    Some(&Account::new(account_name.to_string(), Currency {}, 0))
+            ChartOfAccounts::Account { info, .. } => {
+                if name == &info.name && path.len() == 1 {
+                    Some(&Account::new(info.clone()))
                 } else {
                     None
                 }
