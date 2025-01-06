@@ -13,7 +13,6 @@ pub enum AccountType {
 #[derive(Debug)]
 pub enum ChartOfAccounts {
     Group {
-        name: String,
         headline: Option<String>,
         footer: Option<String>,
         children: HashMap<String, ChartOfAccounts>,
@@ -36,7 +35,7 @@ impl ChartOfAccounts {
 
     pub fn name(&self) -> &str {
         match self {
-            ChartOfAccounts::Group { name, .. } => name,
+            ChartOfAccounts::Group { headline, .. } => headline.as_ref().map_or("", |s| s),
             ChartOfAccounts::Account { name, .. } => name,
         }
     }
