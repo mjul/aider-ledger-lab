@@ -31,8 +31,8 @@ impl Account {
         let mut balance = Money::from_major(0, &self.currency);
         for entry in &self.entries {
             if entry.posting_date <= date {
-                balance += entry.debit;
-                balance -= entry.credit;
+                balance += entry.debit.clone();
+                balance -= entry.credit.clone();
             }
         }
         balance
