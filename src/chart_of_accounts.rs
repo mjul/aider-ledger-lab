@@ -52,4 +52,30 @@ mod tests {
             children: Vec::new(),
         };
     }
+
+    #[test]
+    fn test_chart_of_accounts_tree() {
+        let mut coa = ChartOfAccounts::Group {
+            headline: Some("RESULTATOPGØRELSE".to_string()),
+            footer: None,
+            children: Vec::new(),
+        };
+
+        let mut nettoomsætning = ChartOfAccounts::Group {
+            headline: Some("Nettoomsætning".to_string()),
+            footer: None,
+            children: Vec::new(),
+        };
+
+        nettoomsætning.add_child(ChartOfAccounts::Account {
+            info: AccountInfo {
+                id: Default::default(),
+                name: "Salg af varer og ydelser".to_string(),
+                currency: rusty_money::iso::DKK.clone(),
+                account_number: 0,
+            },
+            account_type: AccountType::Revenue,
+        });
+        coa.add_child(nettoomsætning);
+    }
 }
