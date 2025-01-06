@@ -4,18 +4,18 @@ use rust_decimal::Decimal;
 use rusty_money::{Money};
 use rusty_money::iso::Currency;
 
-pub struct Account {
-    pub id: AccountId,
+pub struct AccountId {
+    pub id: Uuid,
     pub name: String,
     pub currency: Currency,
     pub account_number: u32,
     pub entries: Vec<Entry>,
 }
 
-impl Account {
+impl AccountId {
     pub fn new(name: String, currency: Currency, account_number: u32) -> Self {
-        Account {
-            id: AccountId::new(),
+        AccountId {
+            id: Uuid::new_v4(),
             name,
             currency,
             account_number,
@@ -44,13 +44,4 @@ pub struct Entry {
     pub effective_date: NaiveDate,
     pub debit: Money<'static, Currency>,
     pub credit: Money<'static, Currency>,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct AccountId(Uuid);
-
-impl AccountId {
-    pub fn new() -> Self {
-        AccountId(Uuid::new_v4())
-    }
 }
