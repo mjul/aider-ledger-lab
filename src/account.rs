@@ -1,17 +1,18 @@
 use chrono::NaiveDate;
 use uuid::Uuid;
-use decimal::Decimal;
+use rust_decimal::Decimal;
+use rusty_money::{Money, Currency};
 
 pub struct Account {
     pub id: AccountId,
     pub name: String,
-    pub currency: String,
+    pub currency: Currency,
     pub account_number: u32,
     pub entries: Vec<Entry>,
 }
 
 impl Account {
-    pub fn new(name: String, currency: String, account_number: u32) -> Self {
+    pub fn new(name: String, currency: Currency, account_number: u32) -> Self {
         Account {
             id: AccountId::new(),
             name,
@@ -25,8 +26,8 @@ impl Account {
         self.entries.push(entry);
     }
 
-    pub fn get_balance(&self, date: NaiveDate) -> MoneyAmount {
-        let mut balance = MoneyAmount::new(Decimal::ZERO);
+    pub fn get_balance(&self, date: NaiveDate) -> Money {
+        let mut balance = Money::zero(self.currency);
         for entry in &self.entries {
             if entry.posting_date <= date {
                 balance = balance + entry.amount;
@@ -39,7 +40,7 @@ impl Account {
 pub struct Entry {
     pub posting_date: NaiveDate,
     pub effective_date: NaiveDate,
-    pub amount: MoneyAmount,
+    pub amount: Money,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -48,30 +49,5 @@ pub struct AccountId(Uuid);
 impl AccountId {
     pub fn new() -> Self {
         AccountId(Uuid::new_v4())
-    }
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct MoneyAmount(Decimal);
-
-impl MoneyAmount {
-    pub fn new(amount: Decimal) -> Self {
-        MoneyAmount(amount)
-    }
-}
-
-impl std::ops::Add for MoneyAmount {
-    type Output = Self;
-
-    fn add(self, other: Self) -> Self {
-        MoneyAmount(self.0 + other.0)
-    }
-}
-
-impl std::ops::Sub for MoneyAmount {
-    type Output = Self;
-
-    fn sub(self, other: Self) -> Self {
-        MoneyAmount(self.0 - other.0)
     }
 }
