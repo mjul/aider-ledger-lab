@@ -1,27 +1,44 @@
 use std::collections::HashMap;
 use crate::account::Account;
 
-pub struct ChartOfAccounts {
-    name: String,
-    accounts: HashMap<String, Account>,
-    children: HashMap<String, ChartOfAccounts>,
+#[derive(Debug)]
+pub enum AccountType {
+    Asset,
+    Liability,
+    Equity,
+    Revenue,
+    Expense,
+}
+
+#[derive(Debug)]
+pub enum ChartOfAccounts {
+    Group {
+        name: String,
+        headline: Option<String>,
+        footer: Option<String>,
+        children: HashMap<String, ChartOfAccounts>,
+    },
+    Account {
+        name: String,
+        account_type: AccountType,
+    },
 }
 
 impl ChartOfAccounts {
-    pub fn new(name: String) -> Self {
-        ChartOfAccounts {
-            name,
-            accounts: HashMap::new(),
-            children: HashMap::new(),
+    pub fn add_child(&mut self, child: ChartOfAccounts) {
+        match self {
+            ChartOfAccounts::Group { children, .. } => {
+                children.insert(child.name().to_string(), child);
+            }
+            _ => panic!("Cannot add child to a non-group account"),
         }
     }
 
-    pub fn add_account(&mut self, account: Account) {
-        self.accounts.insert(account.name.clone(), account);
-    }
-
-    pub fn add_child(&mut self, child: ChartOfAccounts) {
-        self.children.insert(child.name.clone(), child);
+    pub fn name(&self) -> &str {
+        match self {
+            ChartOfAccounts::Group { name, .. } => name,
+            ChartOfAccounts::Account { name, .. } => name,
+        }
     }
 
     pub fn get_account(&self, path: &[String]) -> Option<&Account> {
@@ -30,10 +47,21 @@ impl ChartOfAccounts {
         }
 
         let name = &path[0];
-        if path.len() == 1 {
-            self.accounts.get(name)
-        } else {
-            self.children.get(name).and_then(|child| child.get_account(&path[1..]))
+        match self {
+            ChartOfAccounts::Group { children, .. } => {
+                if path.len() == 1 {
+                    None
+                } else {
+                    children.get(name).and_then(|child| child.get_account(&path[1..]))
+                }
+            }
+            ChartOfAccounts::Account { name: account_name, .. } => {
+                if name == account_name && path.len() == 1 {
+                    Some(&Account::new(account_name.to_string()))
+                } else {
+                    None
+                }
+            }
         }
     }
 }
