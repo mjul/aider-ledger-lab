@@ -1,6 +1,6 @@
 # aider-ledger-lab
 
-This repository contains a simple model of a Rust library for a general ledger, designed for use in accounting. The ledger is structured into accounts, which are organized into a tree called a chart of accounts.
+Welcome to the aider-ledger-lab repository! This project is a simple model of a Rust library for a general ledger, designed for use in accounting. The ledger is structured into accounts, which are organized into a tree called a chart of accounts.
 
 The chart of accounts includes individual accounts and logical accounts. Logical accounts (non-leaf nodes) have an optional group headline and group sum in the headline or as a separate line in the balance below the group. This allows logical accounts to have an idea of summing the child accounts.
 
