@@ -27,13 +27,14 @@ impl Account {
         self.entries.push(entry);
     }
 
-    pub fn get_balance(&self, date: NaiveDate) -> Money {
-        let mut balance = Money::zero(self.currency);
+    pub fn get_balance(&self, date: NaiveDate) -> Money<'_, Currency> {
+        let mut balance = Money::from_major(0, &self.currency);
         for entry in &self.entries {
             if entry.posting_date <= date {
-                balance = balance + entry.amount;
+                todo!("sum credits and debits")
             }
         }
+        // return the balance only
         balance
     }
 }
@@ -41,8 +42,10 @@ impl Account {
 pub struct Entry {
     pub posting_date: NaiveDate,
     pub effective_date: NaiveDate,
-    pub amount: Money,
+    pub debit: Decimal,
+    pub credit: Decimal,
 }
+
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct AccountId(Uuid);
