@@ -4,6 +4,7 @@ use rust_decimal::Decimal;
 use rusty_money::{Money};
 use rusty_money::iso::Currency;
 
+#[derive(Debug)]
 pub struct AccountInfo {
     pub id: Uuid,
     pub name: String,

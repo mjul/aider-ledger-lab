@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use crate::account::{Account, AccountInfo};
+use crate::account::AccountInfo;
 
 #[derive(Debug)]
 pub enum AccountType {
@@ -27,7 +26,7 @@ impl ChartOfAccounts {
     pub fn add_child(&mut self, child: ChartOfAccounts) {
         match self {
             ChartOfAccounts::Group { children, .. } => {
-                children.insert(child.name().to_string(), child);
+                children.push(child);
             }
             _ => panic!("Cannot add child to a non-group account"),
         }
@@ -39,28 +38,18 @@ impl ChartOfAccounts {
             ChartOfAccounts::Account { info, .. } => &info.name,
         }
     }
+}
 
-    pub fn get_account(&self, path: &[String]) -> Option<&Account> {
-        if path.is_empty() {
-            return None;
-        }
+#[cfg(test)]
 
-        let name = &path[0];
-        match self {
-            ChartOfAccounts::Group { children, .. } => {
-                if path.len() == 1 {
-                    None
-                } else {
-                    children.get(name).and_then(|child| child.get_account(&path[1..]))
-                }
-            }
-            ChartOfAccounts::Account { info, .. } => {
-                if name == &info.name && path.len() == 1 {
-                    Some(&Account::new(info.clone()))
-                } else {
-                    None
-                }
-            }
-        }
+mod tests {
+    use super::*;
+    #[test]
+    fn test_empty_chart_of_accounts() {
+        let coa = ChartOfAccounts::Group {
+            headline: None,
+            footer: None,
+            children: Vec::new(),
+        };
     }
 }
